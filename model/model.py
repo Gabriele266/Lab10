@@ -4,6 +4,6 @@ from database.DAO import DAO
 
 
 class Model:
-
     def __init__(self):
-        pass
+        self.graph: nx.Graph | None = None          # Grafo creato dalla funzione
+        self.selected_year: int | None = None       # Anno selezionato nel menu dropdown

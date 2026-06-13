@@ -18,6 +18,7 @@ class View(ft.UserControl):
 
     def load_interface(self):
         # title
+        self._controller.create_graph(2017)
         self._title = ft.Text("Country Borders", color="blue", size=24)
         self._page.controls.append(self._title)
 
