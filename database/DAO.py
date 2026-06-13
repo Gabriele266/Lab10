@@ -8,6 +8,25 @@ class DAO:
         pass
 
     @staticmethod
+    def read_countries() -> list[Country]:
+        cnx = DBConnect.get_connection()
+        cursor = cnx.cursor(dictionary = True)
+        query = "SELECT * FROM country;"
+
+        cursor.execute(query)
+        l = []
+        for row in cursor.fetchall():
+            l.append(Country(
+                abbreviation=row["StateAbb"],
+                code=row["CCode"],
+                full_name=row["StateNme"]
+            ))
+
+        cursor.close()
+        cnx.close()
+        return l
+
+    @staticmethod
     def read_contiguities(max_year: int) -> list[Contiguity]:
         """
         Read all the contiguities with the specified max_year and return only the ones

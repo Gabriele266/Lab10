@@ -75,3 +75,20 @@ class Controller:
 
             txt_result.controls.append(ft.Text(f"{node.full_name} confina con {p} stati"))
 
+    def handle_selected_item_change(self, event):
+        self._model.selected_country_code = event.data
+        print(event.data)
+
+    def create_countries_dropdown(self) -> ft.Dropdown:
+        countries = DAO.read_countries()
+
+        options = [ ft.dropdown.Option(
+            key=str(c.code),
+            text=c.full_name
+        ) for c in countries]
+        d = ft.Dropdown(
+            options=options,
+            on_change=self.handle_selected_item_change
+        )
+
+        return d

@@ -23,7 +23,10 @@ class View(ft.UserControl):
         #ROW with controls
         self._txtAnno = ft.TextField(label="Anno", on_change=self.controller.handle_input_year_change)
         self._btnCalcola = ft.ElevatedButton(text="Calcola Confini", on_click=self.controller.handle_button_calcola)
-        row1 = ft.Row([self._txtAnno, self._btnCalcola], alignment=ft.MainAxisAlignment.CENTER)
+        row1 = ft.Row([
+            self._txtAnno, self._btnCalcola,
+            self.controller.create_countries_dropdown()
+                       ], alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row1)
         # List View where the reply is printed
         self._txt_result = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False)
