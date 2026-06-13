@@ -58,6 +58,15 @@ class Controller:
         # Per ogni connessione A, B se è del tipo specificato allora creo una nuova connessione nel grafo
         # Il grafo è contenuto nel model
 
+    def handle_stati_raggiungibili_click(self, event):
+        cs = self.list_reachable_countries_from(int(self._model.selected_country_code))
+
+        txt_result: ft.ListView = self._view._txt_result
+        txt_result.controls = [
+            ft.Text(c.full_name) for c in cs
+        ]
+        self._view.update_page()
+
     def print_details(self):
         graph = self._model.graph
         if graph is None:
@@ -77,7 +86,22 @@ class Controller:
 
     def handle_selected_item_change(self, event):
         self._model.selected_country_code = event.data
-        print(event.data)
+
+    def  list_reachable_countries_from(self, source_code: int) -> list[Country]:
+        """
+        Lista i paesi raggiungibili a partire da un determinato paese
+        """
+        graph = self._model.graph
+        if not graph.has_node(Country.prep_for_check(source_code)):
+            self._view.create_alert("Hai selezionato uno stato che non esisteva durante quell'anno")
+            return []
+
+        tree = nx.dfs_tree(graph, Country.prep_for_check(source_code))
+        l = []
+        for node, _ in tree.adj.items():
+            l.append(DAO.read_country_by_id(node))
+
+        return l
 
     def create_countries_dropdown(self) -> ft.Dropdown:
         countries = DAO.read_countries()
@@ -88,7 +112,9 @@ class Controller:
         ) for c in countries]
         d = ft.Dropdown(
             options=options,
-            on_change=self.handle_selected_item_change
+            on_change=self.handle_selected_item_change,
+            label="Stato",
+            hint_text="Seleziona uno stato"
         )
 
         return d

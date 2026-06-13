@@ -8,6 +8,26 @@ class DAO:
         pass
 
     @staticmethod
+    def read_country_by_id(code: int) -> Country | None:
+        cnx = DBConnect.get_connection()
+        cursor = cnx.cursor(dictionary=True)
+        query = "SELECT * FROM country WHERE CCode=%s;"
+
+        data = tuple([code])
+        cursor.execute(query, data)
+        res = cursor.fetchall()
+        if len(res) == 0:
+            return None
+        else:
+            cursor.close()
+            cnx.close()
+            return Country(
+                full_name=res[0]["StateNme"],
+                code=res[0]["CCode"],
+                abbreviation=res[0]["StateAbb"]
+            )
+
+    @staticmethod
     def read_countries() -> list[Country]:
         cnx = DBConnect.get_connection()
         cursor = cnx.cursor(dictionary = True)
