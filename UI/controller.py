@@ -1,5 +1,6 @@
 import flet as ft
 import networkx as nx
+from networkx.classes import neighbors
 
 from database.Country import Country
 from database.DAO import DAO
@@ -11,6 +12,19 @@ class Controller:
         self._view = view
         # the model, which implements the logic of the program and holds the data
         self._model = model
+
+    def handle_input_year_change(self, event):
+        self._model.selected_year = event.data
+
+    def handle_button_calcola(self, event):
+        y = int(self._model.selected_year)
+        if y is None or y < 1816 or y > 2016:
+            self._view.create_alert("Anno selezionato non corretto, deve essere tra il 1816 e 2016")
+            return
+
+        self.create_graph(y)
+        self.print_details()
+        self._view.update_page()
 
     def create_graph(self, year: int):
         """
@@ -43,4 +57,21 @@ class Controller:
         # Il DAO si occupa di permettermi di iterare le istanze della tabella contiguity
         # Per ogni connessione A, B se è del tipo specificato allora creo una nuova connessione nel grafo
         # Il grafo è contenuto nel model
-        pass
+
+    def print_details(self):
+        graph = self._model.graph
+        if graph is None:
+            return
+
+        txt_result: ft.ListView = self._view._txt_result
+        txt_result.controls = [
+            ft.Text(f"Numero di componenti connesse: {nx.number_connected_components(graph)}")
+        ]
+
+        # Dettaglio dei nodi --> Numero di paesi con cui confina ogni nodo
+        for node, adiacents in graph.adj.items():
+            neighbors = adiacents.items()
+            p = len(neighbors)
+
+            txt_result.controls.append(ft.Text(f"{node.full_name} confina con {p} stati"))
+

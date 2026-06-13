@@ -13,18 +13,16 @@ class View(ft.UserControl):
         self._controller = None
         # graphical elements
         self._title = None
-
         self._txt_result = None
 
     def load_interface(self):
         # title
-        self._controller.create_graph(2017)
         self._title = ft.Text("Country Borders", color="blue", size=24)
         self._page.controls.append(self._title)
 
         #ROW with controls
-        self._txtAnno = ft.TextField(label="Anno")
-        self._btnCalcola = ft.ElevatedButton(text="Calcola Confini", on_click=self._controller.handleCalcola)
+        self._txtAnno = ft.TextField(label="Anno", on_change=self.controller.handle_input_year_change)
+        self._btnCalcola = ft.ElevatedButton(text="Calcola Confini", on_click=self.controller.handle_button_calcola)
         row1 = ft.Row([self._txtAnno, self._btnCalcola], alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row1)
         # List View where the reply is printed
